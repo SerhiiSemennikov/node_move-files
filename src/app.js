@@ -1,13 +1,11 @@
 /* eslint-disable no-console */
 'use strict';
 
-const fs = require('fs');
+const fs = require('fs/promises');
 const path = require('path');
 
 const moveFiles = async () => {
   const args = process.argv.slice(2);
-
-  console.log(process.argv);
 
   const [from, to] = args;
 
@@ -22,7 +20,8 @@ const moveFiles = async () => {
 
     const updatedPath = isDirectory ? path.join(to, path.basename(from)) : to;
 
-    fs.promises.rename(from, updatedPath);
+    await fs.move(from, updatedPath);
+    console.log('success!');
   } catch (error) {
     if (!from) {
       throw new Error('No source!');
