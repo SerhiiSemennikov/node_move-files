@@ -22,8 +22,15 @@ const moveFiles = async () => {
 
     const updatedPath = isDirectory ? path.join(to, path.basename(from)) : to;
 
-    fs.renameSync(from, updatedPath);
+    fs.promises.rename(from, updatedPath);
   } catch (error) {
+    if (!from) {
+      throw new Error('No source!');
+    }
+
+    if (!to) {
+      throw new Error('No destinion!');
+    }
     console.error('Rename error!', error);
   }
 };
