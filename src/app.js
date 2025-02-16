@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 'use strict';
 
-const fs = require('fs/promises');
+const fs = require('fs-extra');
 const path = require('path');
 
 const moveFiles = async () => {
@@ -9,28 +9,24 @@ const moveFiles = async () => {
 
   const [from, to] = args;
 
-  if (args.length < 2) {
-    console.error('You need fileName and destination');
-
-    return;
-  }
-
   try {
-    const isDirectory = fs.existsSync(to) && fs.lstatSync(to).isDirectory();
-
-    const updatedPath = isDirectory ? path.join(to, path.basename(from)) : to;
-
-    await fs.move(from, updatedPath);
-    console.log('success!');
-  } catch (error) {
     if (!from) {
       throw new Error('No source!');
     }
 
     if (!to) {
-      throw new Error('No destinion!');
+      throw new Error('No destination!');
     }
-    console.error('Rename error!', error);
+
+    const isDirectory = fs.existsSync(to) && fs.lstatSync(to).isDirectory();
+
+    const updatedPath = isDirectory ? path.join(to, path.basename(from)) : to;
+
+    // await fs.move(from, updatedPath);
+    fs.renameSync(from, updatedPath);
+    // fs.promises.rename(from, updatedPath);
+  } catch (e) {
+    console.error('Rename error!', e.message);
   }
 };
 
